@@ -43,20 +43,21 @@ class _TextInputLaterScreenState extends State<TextInputLaterScreen> {
   void initState() {
     super.initState();
     _refreshData();
-    _monthData = [];
   }
 
-
+  /*
   Future<void> _addData(year, month, day, date) async {
     await SQLHelper.createData(year, month, day, _descController.text, date);
     _refreshData();
     _filterMonthData(year, month);
   }
+   */
 
-  Future<void> _updateData(year, month, day, date) async {
-    await SQLHelper.updateDescData(year, month, day, _descController.text, date);
+  Future<void> _updateDescData(year, month, day) async {
+    await SQLHelper.updateDescData(year, month, day, _descController.text);
     _refreshData();
     _filterMonthData(year, month);
+    print("데이터 업데이트");
   }
 
   final TextEditingController _descController = TextEditingController();
@@ -64,7 +65,19 @@ class _TextInputLaterScreenState extends State<TextInputLaterScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print("텍스트 수정 화면으로 이동했습니다.");
     final selectedDate = widget.selectedDate;
+
+    final index = _allData.firstWhere((element) => element['date'] == DateFormat('yyyy-MM-dd HH:mm').format(widget.selectedDate));
+    // final dateString = DateFormat('yyyy-MM-dd HH:mm').format(selectedDate);
+
+    final existingData =
+    _allData.firstWhere((element) => element['date'] == DateFormat('yyyy-MM-dd HH:mm').format(widget.selectedDate));
+    _descController.text = existingData['Desc'];
+
+    print("캘린더에서 선택한 날짜 데이터");
+    print(existingData);
+
 
     return GestureDetector(
       onTap: () {
@@ -114,15 +127,24 @@ class _TextInputLaterScreenState extends State<TextInputLaterScreen> {
                 child: ElevatedButton(
                   // 버튼 클릭 시 입력했던 데이터가 저장될 수 있도록 함수 추가 (createData -> _addData)
                   onPressed: () {
-                    _updateData(widget.selectedDate.year, widget.selectedDate.month, widget.selectedDate.day, DateFormat('yyyy-MM-dd HH:mm').format(DateTime.now()));
+                    print("---------------수정 완료 버튼 클릭---------------");
+
+                    _updateDescData(widget.selectedDate.year, widget.selectedDate.month, widget.selectedDate.day);
                     //_filterMonthData(widget.selectedDate.year, widget.selectedDate.month);
 
-                    // Navigator.pop(context);
+                    print("수정 후 전체 데이터");
+                    print(_allData);
+
+                    _descController.text = "";
+
+                    Navigator.pop(context);
+
+
                   },
                   child: const Padding(
                     padding: EdgeInsets.all(15),
                     child: Text(
-                      "저장",
+                      "수정 완료",
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w500,

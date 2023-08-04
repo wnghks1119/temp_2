@@ -25,8 +25,7 @@ class _TextInputScreenState extends State<TextInputScreen> {
       _allData = data;
       _isLoading = false;
     });
-    print("전체 데이터");
-    print(_allData);
+    print("텍스트 필드 화면 refreshData 실행");
   }
 
 
@@ -42,31 +41,24 @@ class _TextInputScreenState extends State<TextInputScreen> {
       _monthData = monthData;
       _isLoading = false;
     });
-    print("월 데이터");
-    print(_monthData);
+    print("filterMonthData 실행");
   }
 
   Future<void> _addData(year, month, day, date) async {
     await SQLHelper.createData(year, month, day, _descController.text, date);
     _refreshData();
     //_filterMonthData(year, month);
-
+    print("addData 함수 실행");
   }
 
+  /*
   Future<void> _updateDescData(year, month, day, date) async {
-    await SQLHelper.updateDescData(year, month, day, _descController.text, date);
+    await SQLHelper.updateDescData(year, month, day, _descController.text);
     _refreshData();
     //_filterMonthData(year, month);
-    print("전체 데이터");
-    print(_allData);
+    print("updateDescData 실행");
   }
-
-  Future<void> _updateDateData(year, month, day, date) async {
-    await SQLHelper.updateDescData(year, month, day, _descController.text, date);
-    _refreshData();
-    //_filterMonthData(year, month);
-
-  }
+  */
 
   Future<void> _deleteData() async {
     await SQLHelper.deleteData();
@@ -80,8 +72,6 @@ class _TextInputScreenState extends State<TextInputScreen> {
   Future<void> _insertColumn() async {
     await SQLHelper.insertColumn();
     _refreshData();
-    print("전체 데이터");
-    print(_allData);
   }
 
   final TextEditingController _descController = TextEditingController();
@@ -89,7 +79,18 @@ class _TextInputScreenState extends State<TextInputScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print("텍스트 입력 화면으로 이동했습니다.");
     final selectedDate = widget.selectedDate;
+    /*
+    final index = _allData.firstWhere((element) => element['date'] == DateFormat('yyyy-MM-dd HH:mm').format(selectedDate));
+    final dateString = DateFormat('yyyy-MM-dd HH:mm').format(selectedDate);
+
+    if (index != null) {
+      final existingData =
+      _allData.firstWhere((element) => element['date'] == dateString);
+      _descController.text = existingData['Desc'];
+    }
+     */
 
     return GestureDetector(
       onTap: () {
@@ -139,27 +140,35 @@ class _TextInputScreenState extends State<TextInputScreen> {
                 child: ElevatedButton(
                   // 버튼 클릭 시 입력했던 데이터가 저장될 수 있도록 함수 추가 (createData -> _addData)
                   onPressed: () {
+                    print("---------------저장 버튼 클릭---------------");
+                    print("선택한 날짜");
                     print(DateFormat('yyyy-MM-dd HH:mm').format(widget.selectedDate));
-                    print(DateFormat('yyyy-MM-dd HH:mm').format(widget.selectedDate).runtimeType);
 
 
-                    print("저장된 데이터");
-                    print(_allData[3]['date']);
-                    print(_allData[3]['date'].runtimeType);
+                    //print("월 : $_monthData");
+                    //print(_allData[3]['date']);
+                    //print(_allData[3]['date'].runtimeType);
+
 
                     _addData(widget.selectedDate.year, widget.selectedDate.month, widget.selectedDate.day, DateFormat('yyyy-MM-dd HH:mm').format(widget.selectedDate));
+
+                    print("저장된 데이터");
+                    print("전체 : $_allData");
+
                     //_updateDateData(widget.selectedDate.year, widget.selectedDate.month, widget.selectedDate.day, DateFormat('yyyy-MM-dd HH:mm').format(widget.selectedDate));
                     //_filterMonthData(widget.selectedDate.year, widget.selectedDate.month);
                     //_deleteData();
                     //_insertColumn();
 
+                    /*
                     if(DateFormat('yyyy-MM-dd HH:mm').format(widget.selectedDate) == _allData[3]['date']) {
                       print("선택된 날과 저장된 날이 값과 데이터 타입 모두 동일합니다.");
                     } else {
                       print("두 데이터가 동일하지 않습니다.");
                     }
+                     */
 
-                    // Navigator.pop(context);
+                    Navigator.pop(context);
 
                     //DateFormat('yyyy-MM-dd HH:mm').format(DateTime.now());
 
