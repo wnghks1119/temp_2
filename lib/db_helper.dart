@@ -16,9 +16,10 @@ class SQLHelper {
       year INTEGER,
       month INTEGER,
       day INTEGER,
-      Desc TEXT
+      Desc TEXT,
+      date TEXT UNIQUE
     )""");
-
+    // createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
   }
 
   // 최초로 앱 실행하여 데이터 아무것도 없는 경우에 데이터베이스 생성을 위한 함수
@@ -30,7 +31,7 @@ class SQLHelper {
   }
 
 
-  static Future<int> createData(int year, int month, int day, String? desc) async {
+  static Future<int> createData(int year, int month, int day, String? desc, String date) async {
     final db = await SQLHelper.db();
 
     final data = {
@@ -38,6 +39,7 @@ class SQLHelper {
       'month': month,
       'day': day,
       'Desc': desc,
+      'date': date
     };
     final id = await db.insert('data', data,
         conflictAlgorithm: sql.ConflictAlgorithm.replace);
@@ -69,7 +71,9 @@ class SQLHelper {
     final db = await SQLHelper.db();
 
     //return db.query('data', where:'month = ?', whereArgs: [month]);
-    return db.rawQuery('SELECT * FROM data WHERE year = $year and month = $month');
+
+    return db.rawQuery('SELECT * FROM data WHERE year = $year and month = $month ORDER BY year asc, month asc, day asc');
+    //return db.rawQuery('SELECT * FROM data WHERE year = $year and month = $month');
   } // 여기서 'data'는 데이터베이스에서 테이블명을 지칭함
   /*
   static Future<List<Map<String, dynamic>>> getMonthData(DateTime selectedDate) async {
@@ -89,7 +93,7 @@ class SQLHelper {
     final db = await SQLHelper.db();
 
     //return db.query('data', where:'day = ?', whereArgs: [day], limit: 1);
-    return db.rawQuery('SELECT * FROM data WHERE year = $year and month = $month and day = $day');
+    return db.rawQuery('SELECT * FROM data WHERE year = $year and month = $month and day = $day ORDER BY year asc, month asc, day asc');
   }
 
   static Future<List<Map<String, dynamic>>> countDayData(int year, int month, int day) async {
@@ -102,17 +106,39 @@ class SQLHelper {
 
 
   // InputListLaterScreen에서 '텍스트 수정 시' 수정내용 반영될 수 있도록 하기
-  static Future<int> updateData(int year, int month, int day, String? desc) async {
+  static Future<int> updateDescData(int year, int month, int day, String? desc, String date) async {
     final db = await SQLHelper.db();
     /*
     final data = {
       'Desc': desc
     }; */
-    final result = await db.rawUpdate('UPDATE data SET Desc = "$desc" WHERE year = $year and month = $month and day = $day');
+    final result = await db.rawUpdate('UPDATE data SET Desc = "$desc" and date = "$date" WHERE year = $year and month = $month and day = $day');
     /*
     final result = await db.update('data', data,
         where: 'date >= ? and date <= ?', whereArgs: [selectedDate]);
     */
+    return result;
+  }
+  static Future<int> updateDateData(int year, int month, int day, String? desc, String date) async {
+    final db = await SQLHelper.db();
+    /*
+    final data = {
+      'Desc': desc
+    }; */
+    final result = await db.rawUpdate('UPDATE data SET date = "$date" and date = "$date" WHERE year = $year and month = $month and day = $day');
+    /*
+    final result = await db.update('data', data,
+        where: 'date >= ? and date <= ?', whereArgs: [selectedDate]);
+    */
+    return result;
+  }
+
+  // 데이터베이스 열 추가
+  static Future<void> insertColumn() async {
+    final db = await SQLHelper.db();
+
+    final result = await db.execute('ALTER TABLE data ADD COLUMN date TEXT');
+
     return result;
   }
 
@@ -123,4 +149,5 @@ class SQLHelper {
       await db.delete('data');
     } catch (e) {}
   }
+
 }

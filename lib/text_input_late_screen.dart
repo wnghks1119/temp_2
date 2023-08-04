@@ -47,14 +47,14 @@ class _TextInputLaterScreenState extends State<TextInputLaterScreen> {
   }
 
 
-  Future<void> _addData(year, month, day) async {
-    await SQLHelper.createData(year, month, day, _descController.text);
+  Future<void> _addData(year, month, day, date) async {
+    await SQLHelper.createData(year, month, day, _descController.text, date);
     _refreshData();
     _filterMonthData(year, month);
   }
 
-  Future<void> _updateData(year, month, day) async {
-    await SQLHelper.updateData(year, month, day, _descController.text);
+  Future<void> _updateData(year, month, day, date) async {
+    await SQLHelper.updateDescData(year, month, day, _descController.text, date);
     _refreshData();
     _filterMonthData(year, month);
   }
@@ -114,7 +114,7 @@ class _TextInputLaterScreenState extends State<TextInputLaterScreen> {
                 child: ElevatedButton(
                   // 버튼 클릭 시 입력했던 데이터가 저장될 수 있도록 함수 추가 (createData -> _addData)
                   onPressed: () {
-                    _updateData(widget.selectedDate.year, widget.selectedDate.month, widget.selectedDate.day);
+                    _updateData(widget.selectedDate.year, widget.selectedDate.month, widget.selectedDate.day, DateFormat('yyyy-MM-dd HH:mm').format(DateTime.now()));
                     //_filterMonthData(widget.selectedDate.year, widget.selectedDate.month);
 
                     // Navigator.pop(context);

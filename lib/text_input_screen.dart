@@ -46,16 +46,26 @@ class _TextInputScreenState extends State<TextInputScreen> {
     print(_monthData);
   }
 
-  Future<void> _addData(year, month, day) async {
-    await SQLHelper.createData(year, month, day, _descController.text);
+  Future<void> _addData(year, month, day, date) async {
+    await SQLHelper.createData(year, month, day, _descController.text, date);
     _refreshData();
-    _filterMonthData(year, month);
+    //_filterMonthData(year, month);
+
   }
 
-  Future<void> _updateData(year, month, day) async {
-    await SQLHelper.updateData(year, month, day, _descController.text);
+  Future<void> _updateDescData(year, month, day, date) async {
+    await SQLHelper.updateDescData(year, month, day, _descController.text, date);
     _refreshData();
-    _filterMonthData(year, month);
+    //_filterMonthData(year, month);
+    print("전체 데이터");
+    print(_allData);
+  }
+
+  Future<void> _updateDateData(year, month, day, date) async {
+    await SQLHelper.updateDescData(year, month, day, _descController.text, date);
+    _refreshData();
+    //_filterMonthData(year, month);
+
   }
 
   Future<void> _deleteData() async {
@@ -65,6 +75,13 @@ class _TextInputScreenState extends State<TextInputScreen> {
       content: Text("Data Deleted"),
     ));
     _refreshData();
+  }
+
+  Future<void> _insertColumn() async {
+    await SQLHelper.insertColumn();
+    _refreshData();
+    print("전체 데이터");
+    print(_allData);
   }
 
   final TextEditingController _descController = TextEditingController();
@@ -122,11 +139,19 @@ class _TextInputScreenState extends State<TextInputScreen> {
                 child: ElevatedButton(
                   // 버튼 클릭 시 입력했던 데이터가 저장될 수 있도록 함수 추가 (createData -> _addData)
                   onPressed: () {
-                    _addData(widget.selectedDate.year, widget.selectedDate.month, widget.selectedDate.day);
+                    print(widget.selectedDate);
+                    print(widget.selectedDate.runtimeType);
+
+
+                    _addData(widget.selectedDate.year, widget.selectedDate.month, widget.selectedDate.day, DateFormat('yyyy-MM-dd HH:mm').format(widget.selectedDate));
+                    //_updateDateData(widget.selectedDate.year, widget.selectedDate.month, widget.selectedDate.day, DateFormat('yyyy-MM-dd HH:mm').format(widget.selectedDate));
                     //_filterMonthData(widget.selectedDate.year, widget.selectedDate.month);
                     //_deleteData();
+                    //_insertColumn();
 
                     // Navigator.pop(context);
+
+                    //DateFormat('yyyy-MM-dd HH:mm').format(DateTime.now());
 
 
                   },
