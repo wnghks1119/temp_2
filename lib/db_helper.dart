@@ -24,7 +24,7 @@ class SQLHelper {
 
   // 최초로 앱 실행하여 데이터 아무것도 없는 경우에 데이터베이스 생성을 위한 함수
   static Future<sql.Database> db() async {
-    return await sql.openDatabase("database_name.db", version: 1,
+    return await sql.openDatabase("database_name_renew.db", version: 1,
         onCreate: (sql.Database database, int version) async {
           await createTables(database);
         });
@@ -72,7 +72,7 @@ class SQLHelper {
 
     //return db.query('data', where:'month = ?', whereArgs: [month]);
 
-    return db.rawQuery('SELECT * FROM data WHERE year = $year and month = $month ORDER BY year asc, month asc, day asc');
+    return db.rawQuery('SELECT * FROM data WHERE month = $month ORDER BY day asc');
     //return db.rawQuery('SELECT * FROM data WHERE year = $year and month = $month');
   } // 여기서 'data'는 데이터베이스에서 테이블명을 지칭함
   /*
@@ -89,11 +89,11 @@ class SQLHelper {
   } */
 
   // 전체 데이터 중 특정 일에 대한 데이터만 추출해주는 함수 (where 조건 createdAt 이용해서 캘린더에서 선택한 일에 대한 데이터 추출)
-  static Future<List<Map<String, dynamic>>> getDayData(int year, int month, int day) async {
+  static Future<List<Map<String, dynamic>>> getDayData(date) async {
     final db = await SQLHelper.db();
 
     //return db.query('data', where:'day = ?', whereArgs: [day], limit: 1);
-    return db.rawQuery('SELECT * FROM data WHERE year = $year and month = $month and day = $day ORDER BY year asc, month asc, day asc');
+    return db.rawQuery('SELECT * FROM data WHERE date = "$date"');
   }
 
   static Future<List<Map<String, dynamic>>> countDayData(int year, int month, int day) async {

@@ -139,15 +139,25 @@ class _TextInputScreenState extends State<TextInputScreen> {
                 child: ElevatedButton(
                   // 버튼 클릭 시 입력했던 데이터가 저장될 수 있도록 함수 추가 (createData -> _addData)
                   onPressed: () {
-                    print(widget.selectedDate);
-                    print(widget.selectedDate.runtimeType);
+                    print(DateFormat('yyyy-MM-dd HH:mm').format(widget.selectedDate));
+                    print(DateFormat('yyyy-MM-dd HH:mm').format(widget.selectedDate).runtimeType);
 
+
+                    print("저장된 데이터");
+                    print(_allData[3]['date']);
+                    print(_allData[3]['date'].runtimeType);
 
                     _addData(widget.selectedDate.year, widget.selectedDate.month, widget.selectedDate.day, DateFormat('yyyy-MM-dd HH:mm').format(widget.selectedDate));
                     //_updateDateData(widget.selectedDate.year, widget.selectedDate.month, widget.selectedDate.day, DateFormat('yyyy-MM-dd HH:mm').format(widget.selectedDate));
                     //_filterMonthData(widget.selectedDate.year, widget.selectedDate.month);
                     //_deleteData();
                     //_insertColumn();
+
+                    if(DateFormat('yyyy-MM-dd HH:mm').format(widget.selectedDate) == _allData[3]['date']) {
+                      print("선택된 날과 저장된 날이 값과 데이터 타입 모두 동일합니다.");
+                    } else {
+                      print("두 데이터가 동일하지 않습니다.");
+                    }
 
                     // Navigator.pop(context);
 
